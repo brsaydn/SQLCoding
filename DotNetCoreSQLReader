@@ -1,0 +1,60 @@
+using System;
+using System.Data.SqlClient;
+
+namespace App1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            
+          GetAllProcuts();
+  
+        }
+
+        static void GetAllProcuts()
+        {
+            using(var connection = GetSqlConnection())
+            {
+                try
+                {
+                    connection.Open();
+                    string sql ="SELECT * FROM Product";
+
+                    SqlCommand command = new SqlCommand(sql, connection);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while(reader.Read())
+                    {
+                        Console.WriteLine($"name: {reader[1]} price:{reader[4]}");
+                    }
+                    reader.Close();
+
+
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+        }
+
+
+        static SqlConnection GetSqlConnection()
+        {
+            string connectionString = @"Data Source=UE160722;Initial Catalog=TESTDB;Integrated Security=SSPI;";     
+
+            //driver, provider
+        
+            return new SqlConnection(connectionString);
+
+        }
+
+    }
+}
