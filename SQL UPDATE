@@ -1,0 +1,38 @@
+UPDATE K_SDK
+SET [deneme].[dbo].k_sdk.MAHALLE_ADI = [deneme_2].[dbo].mah_sinir_lambert.MAHALLE_ADI
+FROM [deneme].[dbo].k_sdk join [deneme_2].[dbo].mah_sinir_lambert
+ON [deneme].[dbo].k_sdk.MAHALLE_KODU = [deneme_2].[dbo].mah_sinir_lambert.MAH_KOY_KOD
+
+------------------------------------------------------------------------------------
+
+UPDATE FONKSIYON_GUNCELLEME
+SET FONKSIYON = REPLACE(FONKSIYON,'160','150')
+
+------------------------------------------------------------------------------------
+
+UPDATE table_name
+  SET column_b = CASE
+                  WHEN column_a = 1 THEN 'Y'
+                  ELSE NULL
+                 END
+
+------------------------------------------------------------------------------------                
+                 
+MERGE INTO <GÜNCELLENECEK_TABLO>
+USING (DİĞER TABLO VE ALINACAK SÜTUNLAR)
+ON(İKİ TABLO ARASI JOİN KOŞULU)
+WHEN MATCHED THEN UPDATE SET  <GÜNCELLENECEK ALAN VE DEĞERLER>               
+
+------------------------------------------------------------------------------------
+
+MERGE INTO MONTAJ_TRAFOBINA T
+        USING(SELECT A.TRAFO_ID,B.TARIH  FROM MONTAJ_TRAFOBINA  A, MONTAJ_TRAFOBINA_TARIH B WHERE A.TRAFO_ID=B.TRAFO_BINA_ID) D
+        ON(T.TRAFO_ID=D.TRAFO_ID)
+        WHEN MATCHED THEN UPDATE SET T.MONTAJ_TARIHI = D.TARIH;
+        
+------------------------------------------------------------------------------------ 
+        
+MERGE INTO MONTAJ_TRAFOBINA T
+        USING(SELECT TRAFO_ID,TARIH  FROM MONTAJ_TRAFOBINA_TARIH) D
+        ON(T.TRAFO_ID=D.TRAFO_ID)
+        WHEN MATCHED THEN UPDATE SET T.MONTAJ_TARIHI = D.TARIH;
