@@ -1,0 +1,12 @@
+--Mükerrer Kayıtları Bulmak
+
+Select Kolon_Adi, Count(Kolon_Adi) 
+From Tablo_Adi 
+Group By Kolon_Adi 
+Having Count (Kolon_Adi) > 1
+
+ÖRNK:
+SELECT KODU, COUNT(KODU) 
+FROM  MAESTRO_UEDAS.SBK_TRAFOBINATIP 
+GROUP BY KODU 
+HAVING Count (KODU) > 1
