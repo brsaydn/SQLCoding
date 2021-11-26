@@ -1,0 +1,80 @@
+using System;
+using System.Data.SqlClient;
+
+namespace App1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            GetAllProcucts(); //Oluşturduğumuz metota Main metotu içerisinden ulaşıyoruz. Bize burdan bağlantıyı gösterecek.
+        }
+
+        static void GetAllProcucts()//Veritabanından aldığı bilgileri ekrana yazdıran bir metot oluşturalım
+        {
+            using(var connection = GetSqlConnection()) //using bloğu oluşturuyoruzki oluşturduğumuz nesne using bloğu dışına çıktığı zaman otomatik olarak silinsin
+            {
+                //connection üzerinden bağlantı sağlıyoruz. try - catch içerisinde oluşturuyoruz hata oluştuğunda bizi uyarsın.
+                try
+                {
+                    connection.Open();
+                    Console.WriteLine("bağlantı sağlandı.");
+                    string sql = "select * from Product";
+                    SqlCommand command = new SqlCommand(sql,connection); // parametre olarak ilk önce sql cümleciği, ikinci olarak connection 
+                    // SqlCommand fonksiyonu ilgili sql cümleciğini veritabanına görndermemizi sağlar
+                    // MSSql ise SqlCommand MSql ise MySqlCommand bknz. docs.
+                    SqlDataReader reader = command.ExecuteReader();
+                    while(reader.Read()) // kaç kayıt varsa döngü tümü kadar dönüp ekrana yazdıracak
+                    {
+                        Console.WriteLine($"ProductId:{reader[0]} ProductName:{reader[1]} CategoryName:{reader[3]}");
+                    }
+                    reader.Close();
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+        static SqlConnection GetSqlConnection() //Veri tabanı için bağlantı için stati bir metot oluşturuyoruz. Geri dönüş değeri SqlConnection
+        {
+            string connectionString = @"Data Source= UE160722; Initial Catalog =  TESTDB; Integrated Security=SSPI;"; //String ifadenin içerisine Veritabanı bağlantı bilgileri içeren cümleciği tanımlıyoruz.
+            return new SqlConnection(connectionString);
+            // driver, provider Database serverlara balanabilmemiz için ihtiyaç duyulan yapılara ihtiyacımız var.
+            // Görünüm  -> Komut Palet -> NuGet Package Manager.Add Package -> aracılığı ile
+            // System.Data.SqlClient paketini projemize ekliyoruz.  -> Terminale dotnet restore komutunu yazarak paketleri projemize ekliyoruz.
+            // Net. projemizin .csproj dosyası içerisine 
+                /**<ItemGroup>
+                <PackageReference Include="System.Data.SqlClient" Version="4.8.3"/>
+                </ItemGroup>
+                </Project> **/
+            // üstteki şekilde paketin eklendiğini görüyoruz.
+            // Provider eklemek için 2.yol
+            // dotnet add package System.Data.SqlClient
+
+            //provider ekleme işleminin ardından connection oluşturabiliriz.
+            
+        
+        }
+    }
+}
+
+
+
+--------------------------------
+.csproj
+
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3"/>
+  </ItemGroup>
+</Project>
+
